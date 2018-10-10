@@ -7,7 +7,7 @@
 %token EOL
 
 %start main
-%type <Syntax.exp> main
+%type <Syntax.term> main
 %%
 
 main:
