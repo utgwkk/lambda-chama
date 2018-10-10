@@ -1,5 +1,9 @@
 type index = int
 
+exception Error of string
+
+let err s = raise (Error s)
+
 type term =
   | Var of index
   | Fun of term
@@ -21,9 +25,13 @@ let rec string_of_term = function
   )
 
 let rec body env depth = function
-  | Syntax.Var i ->
+  | Syntax.Var i -> (
+    try
       let idx = depth - (Env.lookup i env) in
       Var idx
+    with
+      Env.Not_bound -> err ("Free variable " ^ i ^ " appears")
+  )
   | Syntax.Fun (i, t) ->
       let newenv = Env.extend i (depth + 1) env in
       Fun (body newenv (depth + 1) t)
