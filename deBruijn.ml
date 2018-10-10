@@ -6,11 +6,13 @@ let err s = raise (Error s)
 
 type term =
   | Var of index
+  | FreeVar of Syntax.id
   | Fun of term
   | App of term * term
 
 let rec string_of_term = function
   | Var i -> string_of_int i
+  | FreeVar i -> i
   | Fun t -> (
       match t with
       | App _ -> Printf.sprintf "\\.(%s)" (string_of_term t)
@@ -30,7 +32,7 @@ let rec body env depth = function
       let idx = depth - (Env.lookup i env) in
       Var idx
     with
-      Env.Not_bound -> err ("Free variable " ^ i ^ " appears")
+      Env.Not_bound -> FreeVar i
   )
   | Syntax.Fun (i, t) ->
       let newenv = Env.extend i (depth + 1) env in
@@ -40,6 +42,7 @@ let rec body env depth = function
 
 let rec shift c i = function
   | Var n -> Var (if n < c then n else n + i)
+  | FreeVar i -> FreeVar i
   | Fun t -> Fun (shift (c + 1) i t)
   | App (t1, t2) -> App (shift c i t1, shift c i t2)
 
@@ -48,6 +51,7 @@ let lift = shift 0
 let rec subst t m t1 =
   match t1 with
   | Var n -> if n = m then t else Var n
+  | FreeVar i -> FreeVar i
   | Fun t1 ->
       let t' = lift 1 t in
       Fun (subst t' (m + 1) t1)
