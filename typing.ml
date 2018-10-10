@@ -50,10 +50,7 @@ let rec unify =
           | t, TyVar tv -> unify @@ (TyVar tv, t) :: tl
 
 let rec infer env = function
-  | Var i -> (
-    try ([], Env.lookup i env)
-    with Env.Not_bound -> ([], TyVar (fresh_tyvar ()))
-  )
+  | Var i -> ([], Env.lookup i env)
   | Fun (i, t) ->
     let ty_arg = TyVar (fresh_tyvar ()) in
     let newenv = Env.extend i ty_arg env in
@@ -67,6 +64,14 @@ let rec infer env = function
     let s3 = unify eqs in
     (s3, subst_type s3 ty_ret)
 
+let rec fv = function
+  | Syntax.Var i -> MySet.singleton i
+  | Syntax.Fun (i, t) -> MySet.diff (fv t) (MySet.singleton i)
+  | Syntax.App (t1, t2) -> MySet.union (fv t1) (fv t2)
+
 let type_infer term =
   reset_counter ();
-  infer Env.empty term
+  let fvs = fv term in
+  let env =
+    List.fold_left (fun env id -> Env.extend id (TyVar (fresh_tyvar ())) env) Env.empty (MySet.to_list fvs) in
+  infer env term
