@@ -72,6 +72,10 @@ let rec fix f t =
   if t' = old then t'
   else fix f t'
 
-let convert term =
+let convert term verbose =
+  let reduce =
+    if verbose then (fun t -> Printf.printf "-> %s\n" (string_of_term t); beta t)
+    else beta
+  in
   body Env.empty 0 term
-  |> fix beta
+  |> fix reduce
