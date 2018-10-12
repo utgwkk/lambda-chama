@@ -21,8 +21,9 @@ let rec string_of_term = function
   | App (t1, t2) -> (
       match t1, t2 with
       | Fun _, Var _ -> Printf.sprintf "(%s) %s" (string_of_term t1) (string_of_term t2)
-      | Fun _, Fun _ -> Printf.sprintf "(%s) (%s)" (string_of_term t1) (string_of_term t2)
-      | _, App _ -> Printf.sprintf "%s (%s)" (string_of_term t1) (string_of_term t2)
+      | Fun _, _ -> Printf.sprintf "(%s) (%s)" (string_of_term t1) (string_of_term t2)
+      | App _, App _ -> Printf.sprintf "%s (%s)" (string_of_term t1) (string_of_term t2)
+      | App _, Fun _ -> Printf.sprintf "(%s) (%s)" (string_of_term t1) (string_of_term t2)
       | _, _ -> Printf.sprintf "%s %s" (string_of_term t1) (string_of_term t2)
   )
 
