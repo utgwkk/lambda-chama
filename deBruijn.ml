@@ -58,12 +58,20 @@ let rec subst t m t1 =
       Fun (subst t' (m + 1) t1)
   | App (t1, t2) -> App (subst t m t1, subst t m t2)
 
+let rec has_redex = function
+  | App (Fun _, _) -> true
+  | App (t1, t2) -> has_redex t1 || has_redex t2
+  | Fun t -> has_redex t
+  | _ -> false
+
 let rec beta = function
   | App (Fun t1, t2) ->
       let t2' = lift 1 t2 in
       let t1' = subst t2' 0 t1 in
       lift (-1) t1'
-  | App (t1, t2) -> App (beta t1, beta t2)
+  | App (t1, t2) ->
+      if has_redex t1 then App (beta t1, t2)
+      else App (t1, beta t2)
   | Fun t -> Fun (beta t)
   | t -> t
 
