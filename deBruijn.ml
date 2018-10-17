@@ -1,6 +1,7 @@
 type index = int
 
 exception Error of string
+exception Reduction_depth of string
 
 let err s = raise (Error s)
 
@@ -75,16 +76,19 @@ let rec beta = function
   | Fun t -> Fun (beta t)
   | t -> t
 
-let rec fix f t =
+let rec fix f n t =
   let old = t in
   let t' = f t in
-  if t' = old then t'
-  else fix f t'
+  if n <= 0 then
+    raise (Reduction_depth "Max reduction depth exceeded.")
+  else
+    if t' = old then t'
+    else fix f (n - 1) t'
 
-let convert term verbose =
+let convert term verbose max_reduction =
   let reduce =
     if verbose then (fun t -> Printf.printf "-> %s\n" (string_of_term t); beta t)
     else beta
   in
   body Env.empty 0 term
-  |> fix reduce
+  |> fix reduce max_reduction
