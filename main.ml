@@ -26,13 +26,13 @@ let rec repl () =
         Printf.printf "Error on reduction: %s\n" s;
         repl ()
 
-let usage = "Usage: " ^ Sys.argv.(0) ^ " [-v]"
+let usage = "Usage: " ^ Sys.argv.(0) ^ " [-v] [--no-type-inference] [--max-reduction=N]"
 
 let aspec = Arg.align [
   ("-v", Arg.Unit (fun () -> verbose := true),
   Printf.sprintf "Verbose mode. (default: %b)" !verbose);
   ("--max-reduction", Arg.Set_int max_reduction,
-  Printf.sprintf "Disable type inference. (default: %b)" !no_type_inference);
+  Printf.sprintf "Max number of beta reduction. (default: %d)" !max_reduction);
   ("--no-type-inference", Arg.Unit (fun () -> no_type_inference := true),
   Printf.sprintf "Disable type inference. (default: %b)" !no_type_inference);
 ]
