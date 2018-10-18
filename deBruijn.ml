@@ -25,6 +25,7 @@ let rec string_of_term = function
       | Fun _, _ -> Printf.sprintf "(%s) (%s)" (string_of_term t1) (string_of_term t2)
       | App _, App _ -> Printf.sprintf "%s (%s)" (string_of_term t1) (string_of_term t2)
       | App _, Fun _ -> Printf.sprintf "(%s) (%s)" (string_of_term t1) (string_of_term t2)
+      | Var _, App _ -> Printf.sprintf "%s (%s)" (string_of_term t1) (string_of_term t2)
       | _, _ -> Printf.sprintf "%s %s" (string_of_term t1) (string_of_term t2)
   )
 
