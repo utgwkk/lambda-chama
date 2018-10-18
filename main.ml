@@ -1,6 +1,6 @@
 let verbose = ref false
 
-let no_type_inference = ref true
+let no_type_inference = ref false
 
 let max_reduction = ref 1000
 
