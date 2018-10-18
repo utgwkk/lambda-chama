@@ -13,6 +13,14 @@ $ ./lambda-chama
 # ./lambda-chama -v # for verbose mode
 ```
 
+## Options
+
+|Options|Description|
+|:-|:-|
+|-v|Verbose mode. Show each step of beta-reduction.|
+|--no-type-inference|Do not infer types.|
+|--max-reduction=N|Abort reduction at N steps.|
+
 ## Grammar
 
 ```
