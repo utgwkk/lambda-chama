@@ -14,8 +14,12 @@ main:
   Expr EOL { $1 }
 
 Expr:
-| LAMBDA i=ID DOT e=Expr { Fun (i, e) }
+| LAMBDA AbsExpr { $2 }
 | AppExpr { $1 }
+
+AbsExpr:
+| i=ID l=AbsExpr { Fun (i, l) }
+| i=ID DOT e=Expr { Fun (i, e) }
 
 AppExpr:
 | e1=AppExpr e2=AExpr { App (e1, e2) }
