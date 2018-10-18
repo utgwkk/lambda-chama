@@ -83,13 +83,20 @@ let rec fix f n t =
   if n <= 0 then
     raise (Reduction_depth "Max reduction depth exceeded.")
   else
-    if t' = old then t'
+    if t' = old then (n, t')
     else fix f (n - 1) t'
 
-let convert term verbose max_reduction =
+let convert term verbose max_reduction show_num_steps =
   let reduce =
     if verbose then (fun t -> Printf.printf "-> %s\n" (string_of_term t); beta t)
     else beta
   in
-  body Env.empty 0 term
-  |> fix reduce max_reduction
+  let (rest_reduction, t) =
+    body Env.empty 0 term
+    |> fix reduce max_reduction
+  in
+  if show_num_steps then
+    let step = max_reduction - rest_reduction in
+    Printf.printf "Reduced in %d steps:\n" step;
+    t
+  else t

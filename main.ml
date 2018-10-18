@@ -1,5 +1,7 @@
 let verbose = ref false
 
+let show_num_steps = ref false
+
 let no_type_inference = ref false
 
 let max_reduction = ref 1000
@@ -10,12 +12,12 @@ let rec repl () =
   try
     let term = Parser.main Lexer.main (Lexing.from_channel stdin) in
     if !no_type_inference then
-      let indexed_term = DeBruijn.convert term !verbose !max_reduction in
+      let indexed_term = DeBruijn.convert term !verbose !max_reduction !show_num_steps in
       Printf.printf "%s\n" (DeBruijn.string_of_term indexed_term);
       repl ()
     else
       let (_, ty) = Typing.type_infer term in
-      let indexed_term = DeBruijn.convert term !verbose !max_reduction in
+      let indexed_term = DeBruijn.convert term !verbose !max_reduction !show_num_steps in
       Printf.printf "%s : %s\n" (DeBruijn.string_of_term indexed_term) (Syntax.string_of_ty ty);
     repl ()
   with
@@ -35,6 +37,8 @@ let aspec = Arg.align [
   Printf.sprintf "Max number of beta reduction. (default: %d)" !max_reduction);
   ("--no-type-inference", Arg.Unit (fun () -> no_type_inference := true),
   Printf.sprintf "Disable type inference. (default: %b)" !no_type_inference);
+  ("--show-number-steps", Arg.Unit (fun () -> show_num_steps := true),
+  Printf.sprintf "Show the number of reduction steps. (default: %b)" !show_num_steps);
 ]
 
 let () =
