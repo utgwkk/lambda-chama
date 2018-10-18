@@ -17,8 +17,9 @@ $ ./lambda-chama
 
 ```
 <input> ::= <term> <eoi>
-<term> ::= <alphabet> | \<alphabet>.<term> | <term> <term> | (<term>)
+<term> ::= <alphabet> | \<alphabets>.<term> | <term> <term> | (<term>)
 <alphabet> ::= a | b | ... | y | z
+<alphabets> ::= <alphabet> | <alphabet> <alphabets>
 <eoi> ::= \n
 ```
 
