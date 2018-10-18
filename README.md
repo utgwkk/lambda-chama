@@ -31,6 +31,10 @@ $ ./lambda-chama
 <eoi> ::= \n
 ```
 
+## Presentation
+
+- [つくってあそぼ ラムダ計算インタプリタ / Implement an Interpreter of Lambda Calculus](https://speakerdeck.com/kmc_jp/implement-an-interpreter-of-lambda-calculus) (Japanese)
+
 ## License
 
 GPL
